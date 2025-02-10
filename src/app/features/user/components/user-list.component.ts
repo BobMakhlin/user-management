@@ -21,6 +21,8 @@ import {MatButton} from '@angular/material/button';
 import {MatDialog} from '@angular/material/dialog';
 import {AddUserDialogComponent} from './add-user-dialog.component';
 import {AddUser} from '../../../core/models/add-user.model';
+import {RoleSwitcherComponent} from './role-switcher.component';
+import {PermissionService} from '../services/permission.service';
 
 @Component({
   selector: 'app-user-list',
@@ -32,6 +34,7 @@ import {AddUser} from '../../../core/models/add-user.model';
     NgIf,
     AsyncPipe,
     MatButton,
+    RoleSwitcherComponent,
 
   ],
   templateUrl: './user-list.component.html',
@@ -45,6 +48,7 @@ export class UserListComponent implements AfterViewInit, OnDestroy {
   private readonly snackBar = inject(MatSnackBar);
   private readonly cd = inject(ChangeDetectorRef);
   private readonly dialog = inject(MatDialog);
+  readonly permissionService = inject(PermissionService);
 
   loading$?: Observable<boolean>;
   error$?: Observable<string | undefined>;

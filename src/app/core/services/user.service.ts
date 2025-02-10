@@ -29,7 +29,10 @@ export class UserService {
   }
 
   private assignRandomRole(user: User): User {
-    return {...user, role: getRandomRole()}
+    if (!user.role) {
+      return {...user, role: getRandomRole()}
+    }
+    return user;
   }
 
   private toUser(user: AddUser): User {
@@ -39,7 +42,8 @@ export class UserService {
       name: {
         firstname: user.firstname,
         lastname: user.lastname
-      }
+      },
+      role: user.role,
     } as User;
   }
 }

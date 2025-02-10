@@ -1,33 +1,37 @@
 <mat-spinner *ngIf="loading$ | async"></mat-spinner>
 
 <section>
-<!--  todo center button and margins-->
-  <button (click)="onAddUserClick()" mat-flat-button>Add</button>
+  <!--  todo center button and margins-->
+  <button *ngIf="permissionService.canCreateUser$() | async" (click)="onAddUserClick()" mat-flat-button>Add</button>
+
+  <app-role-switcher></app-role-switcher>
 </section>
 
-<mat-table matSort [dataSource]="dataSource" class="mat-elevation-z8">
+<section *ngIf="permissionService.canReadTable$() | async">
+  <mat-table matSort [dataSource]="dataSource" class="mat-elevation-z8">
 
-  <ng-container matColumnDef="fullname">
-    <mat-header-cell *matHeaderCellDef mat-sort-header> Full Name</mat-header-cell>
-    <mat-cell *matCellDef="let user"> {{ user.name.firstname }} {{ user.name.lastname }}</mat-cell>
-  </ng-container>
+    <ng-container matColumnDef="fullname">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Full Name</mat-header-cell>
+      <mat-cell *matCellDef="let user"> {{ user.name.firstname }} {{ user.name.lastname }}</mat-cell>
+    </ng-container>
 
-  <ng-container matColumnDef="email">
-    <mat-header-cell *matHeaderCellDef mat-sort-header> Email</mat-header-cell>
-    <mat-cell *matCellDef="let user"> {{ user.email }}</mat-cell>
-  </ng-container>
+    <ng-container matColumnDef="email">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Email</mat-header-cell>
+      <mat-cell *matCellDef="let user"> {{ user.email }}</mat-cell>
+    </ng-container>
 
-  <ng-container matColumnDef="phone">
-    <mat-header-cell *matHeaderCellDef mat-sort-header> Phone</mat-header-cell>
-    <mat-cell *matCellDef="let user"> {{ user.phone }}</mat-cell>
-  </ng-container>
+    <ng-container matColumnDef="phone">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Phone</mat-header-cell>
+      <mat-cell *matCellDef="let user"> {{ user.phone }}</mat-cell>
+    </ng-container>
 
-  <ng-container matColumnDef="role">
-    <mat-header-cell *matHeaderCellDef mat-sort-header> Role</mat-header-cell>
-    <mat-cell *matCellDef="let user"> {{ user.role }}</mat-cell>
-  </ng-container>
+    <ng-container matColumnDef="role">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Role</mat-header-cell>
+      <mat-cell *matCellDef="let user"> {{ user.role }}</mat-cell>
+    </ng-container>
 
-  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-  <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+  </mat-table>
+</section>
 
-</mat-table>

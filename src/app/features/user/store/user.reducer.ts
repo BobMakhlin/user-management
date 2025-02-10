@@ -1,18 +1,26 @@
-import {UserState} from './user.selectors';
+import {CurrentUserState, UserState} from './user.selectors';
 import {createReducer, on} from '@ngrx/store';
-import {UserActions} from './user.actions';
+import {roleChangedAction, UserActions} from './user.actions';
+import {Role} from '../../../core/models/role.model';
 
-const initialState = {
+const userInitState = {
   users: [],
   loading: false,
   error: undefined,
 } as UserState;
 
-export const userReducer = createReducer(initialState,
+export const userReducer = createReducer(userInitState,
   on(UserActions.loadUsers, (state: UserState) => ({...state, loading: true})),
   on(UserActions.usersLoadedSuccess, (state: UserState, {users}) => ({...state, users, loading: false})),
   on(UserActions.usersLoadedError, (state: UserState, {error}) => ({...state, error, loading: false})),
   on(UserActions.userAddedSuccess, (state: UserState, {user}) => ({...state, users: [...state.users, user]})),
 );
 
-// todo userAddedError + loading???
+const currentUserInitState = {
+  role: Role.User,
+} as CurrentUserState;
+
+export const currentUserReducer = createReducer(currentUserInitState,
+  on(roleChangedAction, (state: CurrentUserState, {role}) => ({role}))
+);
+

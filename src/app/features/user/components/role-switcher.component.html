@@ -1,0 +1,5 @@
+<mat-button-toggle-group [(ngModel)]="currentUserRole" (ngModelChange)="onCurrentUserRoleChanged()" aria-label="Font Style">
+  <ng-container *ngFor="let role of roles">
+    <mat-button-toggle value="{{role}}">{{ role }}</mat-button-toggle>
+  </ng-container>
+</mat-button-toggle-group>
