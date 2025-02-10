@@ -1,3 +1,5 @@
+<mat-spinner *ngIf="loading$ | async"></mat-spinner>
+
 <mat-table matSort [dataSource]="dataSource" class="mat-elevation-z8">
 
   <ng-container matColumnDef="fullname">

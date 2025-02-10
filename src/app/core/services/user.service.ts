@@ -10,10 +10,10 @@ export class UserService {
   // todo env vars idea
   private readonly apiUrl = 'https://fakestoreapi.com/users';
 
-  constructor(private readonly http: HttpClient) {
+  constructor(private readonly httpClient: HttpClient) {
   }
 
   getUsers$(): Observable<User[]> {
-    return this.http.get<User[]>(this.apiUrl);
+    return this.httpClient.get<User[]>(this.apiUrl);
   }
 }
