@@ -14,3 +14,5 @@ export const userReducer = createReducer(initialState,
   on(UserActions.usersLoadedError, (state: UserState, {error}) => ({...state, error, loading: false})),
   on(UserActions.userAddedSuccess, (state: UserState, {user}) => ({...state, users: [...state.users, user]})),
 );
+
+// todo userAddedError + loading???
