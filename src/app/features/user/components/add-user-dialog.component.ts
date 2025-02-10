@@ -1,4 +1,4 @@
-import {Component, inject} from '@angular/core';
+import {AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, inject} from '@angular/core';
 import {MatDialogContent, MatDialogRef, MatDialogTitle} from '@angular/material/dialog';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatButtonModule} from '@angular/material/button';
@@ -7,8 +7,8 @@ import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} fr
 import {AsyncPipe, NgForOf, NgIf} from '@angular/common';
 import {PermissionService} from '../services/permission.service';
 import {MatSelectModule} from '@angular/material/select';
-import {getRoles} from '../../../core/utils/role-utils';
 import {Role} from '../../../core/models/role.model';
+import {RoleService} from '../../../core/services/role.service';
 
 
 @Component({
@@ -28,13 +28,16 @@ import {Role} from '../../../core/models/role.model';
   ],
   standalone: true,
   templateUrl: './add-user-dialog.component.html',
-  styleUrl: './add-user-dialog.component.css'
+  styleUrl: './add-user-dialog.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AddUserDialogComponent {
+export class AddUserDialogComponent implements AfterViewInit {
   userForm: FormGroup;
-  roles: Role[] = getRoles();
+  roles: Role[] = [];
   readonly dialogRef = inject(MatDialogRef<AddUserDialogComponent>);
   readonly permissionService = inject(PermissionService);
+  private readonly roleService = inject(RoleService);
+  private readonly cd = inject(ChangeDetectorRef);
 
   constructor(private readonly fb: FormBuilder) {
     this.userForm = this.fb.group({
@@ -43,8 +46,12 @@ export class AddUserDialogComponent {
       email: ['', [Validators.required, Validators.email]],
       role: [''],
       note: [''],
-      // phone: ['', [Validators.required, Validators.]],
     });
+  }
+
+  ngAfterViewInit(): void {
+    this.roles = this.roleService.getRoles();
+    this.cd.detectChanges();
   }
 
   onSubmit() {

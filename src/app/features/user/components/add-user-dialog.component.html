@@ -1,11 +1,11 @@
 <h2 mat-dialog-title>Add User</h2>
 <mat-dialog-content>
   <section>
-    <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+    <form (ngSubmit)="onSubmit()" [formGroup]="userForm">
 
       <mat-form-field appearance="outline">
         <mat-label>First Name</mat-label>
-        <input matInput formControlName="firstname"/>
+        <input formControlName="firstname" matInput/>
         <mat-error *ngIf="userForm.get('firstname')?.invalid">
           First Name is required (min 2 characters)
         </mat-error>
@@ -13,7 +13,7 @@
 
       <mat-form-field appearance="outline">
         <mat-label>Last Name</mat-label>
-        <input matInput formControlName="lastname"/>
+        <input formControlName="lastname" matInput/>
         <mat-error *ngIf="userForm.get('lastname')?.invalid">
           Last Name is required (min 2 characters)
         </mat-error>
@@ -21,7 +21,7 @@
 
       <mat-form-field appearance="outline">
         <mat-label>Email</mat-label>
-        <input matInput type="email" formControlName="email"/>
+        <input formControlName="email" matInput type="email"/>
         <mat-error *ngIf="userForm.get('email')?.invalid">
           Enter a valid email
         </mat-error>
@@ -38,21 +38,14 @@
 
         <mat-form-field appearance="outline">
           <mat-label>Notes</mat-label>
-          <textarea matInput formControlName="note" rows="4" maxlength="300"></textarea>
+          <textarea formControlName="note" matInput maxlength="300" rows="4"></textarea>
           <mat-error *ngIf="userForm.get('note')?.invalid">
             Note is invalid
           </mat-error>
         </mat-form-field>
       </ng-container>
 
-      <!--      <mat-form-field>-->
-      <!--        <mat-label>Phone number</mat-label>-->
-      <!--        <example-tel-input formControlName="phone" required></example-tel-input>-->
-      <!--        <mat-icon matSuffix>phone</mat-icon>-->
-      <!--        <mat-hint>Include area code</mat-hint>-->
-      <!--      </mat-form-field>-->
-
-      <button mat-raised-button color="primary" type="submit" [disabled]="userForm.invalid">
+      <button [disabled]="userForm.invalid" color="primary" mat-raised-button type="submit">
         Submit
       </button>
 

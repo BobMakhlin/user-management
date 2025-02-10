@@ -13,16 +13,16 @@ import {User} from '../../../core/models/user.model';
 import {MatTableDataSource, MatTableModule} from '@angular/material/table';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatSort, MatSortModule} from '@angular/material/sort';
-import {filter, Observable, Subject, takeUntil} from 'rxjs';
+import {Observable, Subject, takeUntil} from 'rxjs';
 import {UserActions} from '../store/user.actions';
 import {AsyncPipe, NgIf} from '@angular/common';
-import {MatSnackBar} from '@angular/material/snack-bar';
 import {MatButton} from '@angular/material/button';
 import {MatDialog} from '@angular/material/dialog';
 import {AddUserDialogComponent} from './add-user-dialog.component';
 import {AddUser} from '../../../core/models/add-user.model';
 import {RoleSwitcherComponent} from './role-switcher.component';
 import {PermissionService} from '../services/permission.service';
+import {ErrorNotificationService} from '../../../core/services/error-notification.service';
 
 @Component({
   selector: 'app-user-list',
@@ -43,49 +43,37 @@ import {PermissionService} from '../services/permission.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UserListComponent implements AfterViewInit, OnDestroy {
-  private readonly destroy$ = new Subject<void>();
-  private readonly userStore: Store<UserState> = inject(Store<UserState>);
-  private readonly snackBar = inject(MatSnackBar);
-  private readonly cd = inject(ChangeDetectorRef);
-  private readonly dialog = inject(MatDialog);
   readonly permissionService = inject(PermissionService);
-
   loading$?: Observable<boolean>;
   error$?: Observable<string | undefined>;
   dataSource = new MatTableDataSource<User>();
   displayedColumns: string[] = ['fullname', 'email', 'phone', 'role'];
-  // todo display fullname & role? + filtering!!
-
   @ViewChild(MatSort) sort!: MatSort;
+  private readonly destroy$ = new Subject<void>();
+  private readonly userStore: Store<UserState> = inject(Store<UserState>);
+  private readonly cd = inject(ChangeDetectorRef);
+  private readonly dialog = inject(MatDialog);
+  private readonly errorNotificationService = inject(ErrorNotificationService);
 
   ngAfterViewInit(): void {
     this.loadUsers();
-
-    // todo extract somewhere as common snackbar...
     this.error$ = this.userStore.select(selectUserError);
-    this.error$
-      .pipe(takeUntil(this.destroy$),
-        filter(error => !!error))
-      .subscribe(error => {
-        this.snackBar.open(`Error: ${error}`, 'Close', {
-          duration: 3000,
-          horizontalPosition: 'center',
-          verticalPosition: 'bottom',
-        });
-      });
-
+    this.errorNotificationService.listenForErrors(this.error$);
     this.cd.detectChanges();
   }
 
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+    this.errorNotificationService.stopListeningForErrors();
   }
 
   onAddUserClick(): void {
     const dialogRef = this.dialog.open(AddUserDialogComponent);
     dialogRef.afterClosed().subscribe((user: AddUser) => {
-      this.userStore.dispatch(UserActions.addUser({user}));
+      if (user) {
+        this.userStore.dispatch(UserActions.addUser({user}));
+      }
     });
   }
 

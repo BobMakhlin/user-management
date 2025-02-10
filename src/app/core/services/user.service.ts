@@ -2,17 +2,17 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {map, Observable, of} from 'rxjs';
 import {User} from '../models/user.model';
-import {getRandomRole} from '../utils/role-utils';
 import {AddUser} from '../models/add-user.model';
+import {RoleService} from './role.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserService {
-  // todo env vars idea
   private readonly apiUrl = 'https://fakestoreapi.com/users';
 
-  constructor(private readonly httpClient: HttpClient) {
+  constructor(private readonly httpClient: HttpClient,
+              private readonly roleService: RoleService) {
   }
 
   getUsers$(): Observable<User[]> {
@@ -30,7 +30,7 @@ export class UserService {
 
   private assignRandomRole(user: User): User {
     if (!user.role) {
-      return {...user, role: getRandomRole()}
+      return {...user, role: this.roleService.getRoleForNewUser()}
     }
     return user;
   }

@@ -1,14 +1,15 @@
 <mat-spinner *ngIf="loading$ | async"></mat-spinner>
 
-<section>
-  <!--  todo center button and margins-->
-  <button *ngIf="permissionService.canCreateUser$() | async" (click)="onAddUserClick()" mat-flat-button>Add</button>
+<section class="center-button">
+  <button (click)="onAddUserClick()" *ngIf="permissionService.canCreateUser$() | async" mat-flat-button>Add</button>
+</section>
 
+<section class="center-button">
   <app-role-switcher></app-role-switcher>
 </section>
 
 <section *ngIf="permissionService.canReadTable$() | async">
-  <mat-table matSort [dataSource]="dataSource" class="mat-elevation-z8">
+  <mat-table [dataSource]="dataSource" class="mat-elevation-z8" matSort>
 
     <ng-container matColumnDef="fullname">
       <mat-header-cell *matHeaderCellDef mat-sort-header> Full Name</mat-header-cell>
