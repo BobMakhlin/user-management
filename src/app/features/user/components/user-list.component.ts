@@ -43,7 +43,8 @@ export class UserListComponent implements AfterViewInit, OnDestroy {
   loading$?: Observable<boolean>;
   error$?: Observable<string | undefined>;
   dataSource = new MatTableDataSource<User>();
-  displayedColumns: string[] = ['fullname', 'email', 'phone'];
+  displayedColumns: string[] = ['fullname', 'email', 'phone', 'role'];
+  // todo display fullname & role?
 
   @ViewChild(MatSort) sort!: MatSort;
 
