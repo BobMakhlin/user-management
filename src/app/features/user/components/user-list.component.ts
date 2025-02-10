@@ -17,6 +17,10 @@ import {filter, Observable, Subject, takeUntil} from 'rxjs';
 import {UserActions} from '../store/user.actions';
 import {AsyncPipe, NgIf} from '@angular/common';
 import {MatSnackBar} from '@angular/material/snack-bar';
+import {MatButton} from '@angular/material/button';
+import {MatDialog} from '@angular/material/dialog';
+import {AddUserDialogComponent} from './add-user-dialog.component';
+import {AddUser} from '../../../core/models/add-user.model';
 
 @Component({
   selector: 'app-user-list',
@@ -27,6 +31,7 @@ import {MatSnackBar} from '@angular/material/snack-bar';
     MatSortModule,
     NgIf,
     AsyncPipe,
+    MatButton,
 
   ],
   templateUrl: './user-list.component.html',
@@ -39,12 +44,13 @@ export class UserListComponent implements AfterViewInit, OnDestroy {
   private readonly userStore: Store<UserState> = inject(Store<UserState>);
   private readonly snackBar = inject(MatSnackBar);
   private readonly cd = inject(ChangeDetectorRef);
+  private readonly dialog = inject(MatDialog);
 
   loading$?: Observable<boolean>;
   error$?: Observable<string | undefined>;
   dataSource = new MatTableDataSource<User>();
   displayedColumns: string[] = ['fullname', 'email', 'phone', 'role'];
-  // todo display fullname & role?
+  // todo display fullname & role? + filtering!!
 
   @ViewChild(MatSort) sort!: MatSort;
 
@@ -72,6 +78,13 @@ export class UserListComponent implements AfterViewInit, OnDestroy {
     this.destroy$.complete();
   }
 
+  onAddUserClick(): void {
+    const dialogRef = this.dialog.open(AddUserDialogComponent);
+    dialogRef.afterClosed().subscribe((user: AddUser) => {
+      this.userStore.dispatch(UserActions.addUser({user}));
+    });
+  }
+
   private loadUsers(): void {
     this.loading$ = this.userStore.select(selectUserLoading);
     this.userStore.dispatch(UserActions.loadUsers());
@@ -82,5 +95,4 @@ export class UserListComponent implements AfterViewInit, OnDestroy {
         this.dataSource.sort = this.sort;
       });
   }
-
 }

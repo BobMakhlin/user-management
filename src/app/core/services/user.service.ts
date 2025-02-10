@@ -1,8 +1,9 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {map, Observable} from 'rxjs';
+import {map, Observable, of} from 'rxjs';
 import {User} from '../models/user.model';
 import {getRandomRole} from '../utils/role-utils';
+import {AddUser} from '../models/add-user.model';
 
 @Injectable({
   providedIn: 'root',
@@ -20,7 +21,25 @@ export class UserService {
     );
   }
 
+  addUser$(user: AddUser): Observable<User> {
+    console.log('ADD USER, user: ', user);
+    return of(this.toUser(user)).pipe(
+      map(user => this.assignRandomRole(user))
+    );
+  }
+
   private assignRandomRole(user: User): User {
     return {...user, role: getRandomRole()}
+  }
+
+  private toUser(user: AddUser): User {
+    return {
+      email: user.email,
+      phone: user.phone,
+      name: {
+        firstname: user.firstname,
+        lastname: user.lastname
+      }
+    } as User;
   }
 }

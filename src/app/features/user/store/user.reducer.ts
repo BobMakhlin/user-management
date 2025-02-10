@@ -12,4 +12,5 @@ export const userReducer = createReducer(initialState,
   on(UserActions.loadUsers, (state: UserState) => ({...state, loading: true})),
   on(UserActions.usersLoadedSuccess, (state: UserState, {users}) => ({...state, users, loading: false})),
   on(UserActions.usersLoadedError, (state: UserState, {error}) => ({...state, error, loading: false})),
+  on(UserActions.userAddedSuccess, (state: UserState, {user}) => ({...state, users: [...state.users, user]})),
 );
