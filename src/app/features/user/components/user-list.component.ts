@@ -58,14 +58,15 @@ export class UserListComponent implements AfterViewInit, OnDestroy {
   ngAfterViewInit(): void {
     this.loadUsers();
     this.error$ = this.userStore.select(selectUserError);
-    this.errorNotificationService.listenForErrors(this.error$);
+    this.errorNotificationService.listenForErrors(this.error$)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe();
     this.cd.detectChanges();
   }
 
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
-    this.errorNotificationService.stopListeningForErrors();
   }
 
   onAddUserClick(): void {
